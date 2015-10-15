@@ -1,6 +1,6 @@
 FetchWallpaper
 ==============
-Because I was tired of my current wallpaper and losing a great amount of time searching for a new, I created this program to help me a bit. The goal is to have a program that runs in the background and that searches every hour for a new one. 
+Because I was tired of my current wallpaper and losing a great amount of time searching for a new one, I created this program to help me out a bit. The goal is to have a program that updates my wallpaper every X minutes and this should run in the background. 
 
 Usage
 -----
@@ -16,7 +16,7 @@ Options
 	-c                         The id's of the categories you want in RANDOM mode.
 	-h, --help                 Show this message and exit
 	
-This application has 2 modes. You can run in *random* mode and in *member*. Default you are always running in random mode and you can define categories to filter. In member mode, you can define a user id (from the Wallpaperup site) and an optional folder id (A categorized favourite from the given user) to select a random wallpaper.
+This application has 2 modes. You can run in *random* and in *member* mode. Default it is always running in random mode and you can define categories to filter. In member mode, you can define a user id (from the Wallpaperup site) and an optional folder id (A categorized favourite from the given user) to select a random wallpaper.
 
 To run this program at startup. Just create a shortcut of this program and place this in your startup folder (start > programs > startup). Then in the properties of this shortcut, set the target to something like this
 
