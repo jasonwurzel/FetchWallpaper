@@ -117,7 +117,7 @@ World: 18
 Examples
 --------
 
-When you don't give any arguments, it will just pick a random featured wallpaper.
+When you do not specify any arguments, it will pick a random featured wallpaper.
 
 	FetchWallpaper.exe
 	
