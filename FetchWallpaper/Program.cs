@@ -31,7 +31,7 @@ namespace FetchWallpaper {
 
         // Constants for this program
         private const string API = "http://www.wallpaperup.com/api/";
-        private const string API_KEY = "YOUR_APIKEY";
+        private const string API_KEY = "APIKEY";
 
         private const string API_CALL_RANDOM_FEATURED = API + "wallpapers/type/random_featured/number/1/apikey/" + API_KEY + "/format/json/";
         private const string API_CALL_CATEGORY_PAGES = API + "total_pages_nr/type/category/number/1/apikey/" + API_KEY + "/format/json/";
@@ -279,12 +279,8 @@ namespace FetchWallpaper {
             int category = Config.Categories[random.Next(Config.Categories.Count)];
             Logger.info("Using category " + category + " to fetch a wallpaper from");
 
-			// Only fetch wallpapers with minimum screen resolution
-			var screenResolutionWidth = Screen.PrimaryScreen.Bounds.Width;
-			var screenResolutionHeight = Screen.PrimaryScreen.Bounds.Height;
-
-			// Fetch the total number of wallpapers in this category
-			string categoryPagesUrl = API_CALL_CATEGORY_PAGES + CATEGORY_ID + "/" + category + "/width/" + screenResolutionWidth + "/height/" + screenResolutionHeight;
+            // Fetch the total number of wallpapers in this category
+            string categoryPagesUrl = API_CALL_CATEGORY_PAGES + CATEGORY_ID + "/" + category;
             TotalPagesResponse pagesResponse = MakeRequest<TotalPagesResponse>(categoryPagesUrl);
 
             if (pagesResponse == null || (pagesResponse != null && pagesResponse.totalPages == 0)) {
