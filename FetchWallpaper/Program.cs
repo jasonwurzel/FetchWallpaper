@@ -268,7 +268,7 @@ namespace FetchWallpaper {
 
                 // Set the found wallpaper
                 Wallpaper wallpaper = wallpaperResponse.wallpapers[0];
-                wallpaper.Set(Wallpaper.Style.Stretched);
+                wallpaper.Set(Wallpaper.Style.Fill);
 
                 return true;
             }
@@ -307,7 +307,8 @@ namespace FetchWallpaper {
 
             // Set the found wallpaper
             Wallpaper wallpaperCategory = wallpaperCategoryResponse.wallpapers[0];
-            wallpaperCategory.Set(Wallpaper.Style.Stretched);
+            wallpaperCategory.Set(Wallpaper.Style.Fill);
+            //wallpaperCategory.Set(Wallpaper.Style.Stretched);
 
             lastPage = wpid;
 
