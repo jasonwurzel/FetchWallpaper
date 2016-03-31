@@ -31,7 +31,7 @@ namespace FetchWallpaper {
 
         // Constants for this program
         private const string API = "http://www.wallpaperup.com/api/";
-        private const string API_KEY = "APIKEY";
+        private const string API_KEY = "yINyNuqThFVbLI8T5EaHeCkPdon1j7SumJrvTdV8";
 
         private const string API_CALL_RANDOM_FEATURED = API + "wallpapers/type/random_featured/number/1/apikey/" + API_KEY + "/format/json/";
         private const string API_CALL_CATEGORY_PAGES = API + "total_pages_nr/type/category/number/1/apikey/" + API_KEY + "/format/json/";
@@ -52,9 +52,10 @@ namespace FetchWallpaper {
         private readonly object sharedMonitor = new object();
         private int lastPage;
         private bool running;
+	    private bool _paused;
 
-        // Delegate 
-        private delegate bool ExecuteMode();
+		// Delegate 
+		private delegate bool ExecuteMode();
         
         // Main method where this program starts
         static void Main(string[] args) {
@@ -162,6 +163,7 @@ namespace FetchWallpaper {
                     tray.Icon = new Icon(Assembly.GetExecutingAssembly().GetManifestResourceStream("FetchWallpaper.icon.ico"));
                     tray.ContextMenuStrip = new ContextMenuStrip();
                     tray.ContextMenuStrip.Items.Add("Refresh", null, new EventHandler(refreshWallpaper));
+                    tray.ContextMenuStrip.Items.Add("Toggle Refreshing", null, new EventHandler(toggleWallpaperUpdate));
                     tray.ContextMenuStrip.Items.Add("Quit", null, new EventHandler(exitApplication));
                     tray.Text = "Fetch wallpaper application";
                     tray.Visible = true;
@@ -185,6 +187,26 @@ namespace FetchWallpaper {
             // Force the loop to continue
             lock (sharedMonitor) {
                 Monitor.Pulse(sharedMonitor);
+            }
+        }
+
+        /// <summary>
+        /// This method will prepare the application to search for a new wallpaper
+        /// </summary>
+        private void toggleWallpaperUpdate(object sender, EventArgs e) {
+            Logger.info("User request to toggle refreshing");
+
+            // Show message to user
+	        if (_paused)
+				tray.ShowBalloonTip(2000, null, "Continuing refresh..", new ToolTipIcon());
+			else
+				tray.ShowBalloonTip(2000, null, "Pausing refresh..", new ToolTipIcon());
+
+            // Force the loop to continue
+            lock (sharedMonitor)
+            {
+	            _paused = !_paused;
+				Monitor.Pulse(sharedMonitor);
             }
         }
 
@@ -230,8 +252,9 @@ namespace FetchWallpaper {
             // Main loop for waiting and executing
             while (running) {
                 try {
-                    // Start the engines
-                    succes = executeModeFunction();
+	                if (!_paused)
+						// Start the engines
+						succes = executeModeFunction();
                 } catch (Exception e) {
                     succes = false;
                     Logger.severe(e.StackTrace);
@@ -285,7 +308,7 @@ namespace FetchWallpaper {
 
 			// Fetch the total number of wallpapers in this category
 			string categoryPagesUrl = API_CALL_CATEGORY_PAGES + CATEGORY_ID + "/" + category + "/width/" + screenResolutionWidth + "/height/" + screenResolutionHeight;
-            TotalPagesResponse pagesResponse = MakeRequest<TotalPagesResponse>(categoryPagesUrl);
+	        TotalPagesResponse pagesResponse = MakeRequest<TotalPagesResponse>(categoryPagesUrl);
 
             if (pagesResponse == null || (pagesResponse != null && pagesResponse.totalPages == 0)) {
                 Logger.error("No wallpapers found in this category or there something wrong with the API.");
@@ -361,9 +384,9 @@ namespace FetchWallpaper {
 
             // Set the found wallpaper
             Wallpaper wallpaperMember = wallpaperResponse.wallpapers[0];
-            wallpaperMember.Set(Wallpaper.Style.Stretched);
+			wallpaperMember.Set(Wallpaper.Style.Fill);
 
-            lastPage = wpid;
+			lastPage = wpid;
 
             return true;
         }
